@@ -1,34 +1,35 @@
-const express = require("express"); // import express framework
-const app = express(); // create express app instance
- 
+// server.js
+import express from "express";
+import dotenv from "dotenv";
+import rateLimiter from "./src/middleware/rateLimiter.js";
+import swaggerDocs from "./src/docs/swagger.js";
+import authRoutes from "./routes/auth.js";
+import bookRoutes from "./routes/books.js";
+import cors from "cors";
 
-const rateLimiter = require("./src/middleware/rateLimiter");
-require("dotenv").config(); // load environment variables from .env file
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 6000;
 
 app.use(express.json());
+app.use(rateLimiter);
+app.use(cors());
 
-// middleware to parse JSON request bodies
 app.get("/", (req, res) => {
-    console.log("Received a request to the root endpoint");
-
+  console.log("✅ Root endpoint hit");
   res.send("Welcome to Book Review API!");
 });
- 
-app.use(rateLimiter);
 
 app.get("/health", (req, res) => {
+  console.log("✅ Health check endpoint hit");
   res.json({ status: "OK", port: PORT });
 });
-  
 
-// Swagger UI for OpenAPI documentation
-require("./src/docs/swagger")(app);
+swaggerDocs(app);
 
-// Mount your main routes
-// app.use("/api/auth", require("./src/routes/auth")); // Auth endpoints
-// app.use("/api/books", require("./src/routes/books")); // Book endpoints
-// app.use("/api/reviews", require("./src/routes/reviews")); // Review endpoints
+app.use("/api/auth", authRoutes);
+app.use("/api/books", bookRoutes);
+// app.use("/api/reviews", reviewRoutes); // Add this if needed
 
-// Start the server
-const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

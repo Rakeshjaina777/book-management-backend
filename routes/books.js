@@ -1,11 +1,11 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   createBook,
   getBooks,
   getBookById,
-} = require("../controllers/bookController");
-const authenticate = require("../middleware/auth");
-const { check, validationResult } = require("express-validator");
+} from "../src/controllers/bookController.js";
+import authenticate from "../src/middleware/auth.js";
+import { check, query, validationResult } from "express-validator";
 
 const router = express.Router();
 
@@ -37,10 +37,13 @@ const router = express.Router();
  *             properties:
  *               title:
  *                 type: string
+ *                 example: The Great Gatsby
  *               author:
  *                 type: string
+ *                 example: F. Scott Fitzgerald
  *               genre:
  *                 type: string
+ *                 example: Classic Fiction
  *     responses:
  *       201:
  *         description: Book created
@@ -57,8 +60,12 @@ router.post(
   ],
   (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
+      console.warn("Validation failed in POST /api/books:", errors.array());
       return res.status(400).json({ errors: errors.array() });
+    }
+
+    console.log("✅ Creating book with data:", req.body);
     createBook(req, res);
   }
 );
@@ -84,12 +91,31 @@ router.post(
  *         name: page
  *         schema:
  *           type: integer
+ *           minimum: 1
  *         description: Page number for pagination
  *     responses:
  *       200:
  *         description: List of books
  */
-router.get("/", getBooks);
+router.get(
+  "/",
+  [
+    query("page")
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage("Page must be a positive integer"),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.warn("Validation failed in GET /api/books:", errors.array());
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    console.log("✅ Fetching books with query:", req.query);
+    getBooks(req, res);
+  }
+);
 
 /**
  * @swagger
@@ -108,6 +134,7 @@ router.get("/", getBooks);
  *         name: page
  *         schema:
  *           type: integer
+ *           minimum: 1
  *         description: Page for review pagination
  *     responses:
  *       200:
@@ -115,15 +142,27 @@ router.get("/", getBooks);
  *       404:
  *         description: Book not found
  */
-router.get("/:id", getBookById);
+router.get(
+  "/:id",
+  [
+    query("page")
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage("Page must be a positive integer"),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.warn(
+        `Validation failed in GET /api/books/${req.params.id}:`,
+        errors.array()
+      );
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-module.exports = router;
+    console.log("✅ Fetching book details for ID:", req.params.id);
+    getBookById(req, res);
+  }
+);
 
-// ✅ Summary:
-// - POST /books: Authenticated book creation
-// - GET /books: Filter by author/genre, paginate
-// - GET /books/:id: Include average rating + reviews
-// - Validation via express-validator
-// - Prisma handles DB querying and joins
-// - Swagger docs for all routes
-// - JWT Middleware enforced on book creation
+export default router;

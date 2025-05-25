@@ -1,5 +1,7 @@
-const morgan = require("morgan");
-const winston = require("winston");
+// src/middleware/logger.js
+
+import morgan from "morgan";
+import winston from "winston";
 
 const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: "logs/api.log" })],
@@ -11,4 +13,4 @@ const logMiddleware = morgan("combined", {
   },
 });
 
-module.exports = logMiddleware;
+export default logMiddleware;

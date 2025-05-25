@@ -1,6 +1,6 @@
-const express = require("express");
-const { signup, login } = require("../controllers/authController");
-const { check, validationResult } = require("express-validator");
+import express from "express";
+import { signup, login } from "../src/controllers/authController.js";
+import { check, validationResult } from "express-validator";
 
 const router = express.Router();
 
@@ -23,6 +23,9 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
@@ -34,7 +37,7 @@ const router = express.Router();
  *       201:
  *         description: User created
  *       400:
- *         description: Email already exists
+ *         description: Email already exists or validation failed
  */
 router.post(
   "/signup",
@@ -44,8 +47,15 @@ router.post(
   ],
   (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
+      console.error(
+        "⚠️  Validation failed in /api/auth/signup:",
+        errors.array()
+      );
       return res.status(400).json({ errors: errors.array() });
+    }
+
+    console.log("✅ Signup request received for:", req.body.email);
     signup(req, res);
   }
 );
@@ -62,11 +72,16 @@ router.post(
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
+ *                 example: user@example.com
  *               password:
  *                 type: string
+ *                 example: secret123
  *     responses:
  *       200:
  *         description: Token returned
@@ -74,17 +89,21 @@ router.post(
  *         description: Invalid credentials
  */
 router.post(
-  "/login",
+  "/auth/login",
   [
     check("email").isEmail().withMessage("Invalid email"),
     check("password").notEmpty().withMessage("Password is required"),
   ],
   (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty())
+    if (!errors.isEmpty()) {
+      console.warn("⚠️  Validation failed in /api/auth/login:", errors.array());
       return res.status(400).json({ errors: errors.array() });
+    }
+
+    console.log("✅ Login request received for:", req.body.email);
     login(req, res);
   }
 );
 
-module.exports = router;
+export default router;

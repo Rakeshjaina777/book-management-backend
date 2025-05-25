@@ -1,26 +1,31 @@
-const swaggerJSDoc = require("swagger-jsdoc"); // generates the OpenAPI spec
-const swaggerUi = require("swagger-ui-express"); // serves Swagger UI
+// src/docs/swagger.js
+
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const options = {
   definition: {
-    openapi: "3.0.0", // use OpenAPI 3.0 spec
+    openapi: "3.0.0",
     info: {
-      title: "Book Review API", // title of the API
-      version: "1.0.0", // API version
-      description: "Express + Prisma API", // description
+      title: "Book Review API",
+      version: "1.0.0",
+      description: "Express + Prisma API",
     },
     servers: [
       {
-        url: "http://localhost:5000/api", // base URL for API
+        url: "http://localhost:5000",
         description: "Development server",
       },
     ],
   },
-  apis: ["./src/routes/*.js"], // source of annotations
+  apis: ["./routes/auth.js","./routes/*.js", "./src/controllers/*.js", "./src/middleware/*.js"],
+  // path to files with Swagger annotations
 };
 
 const swaggerSpec = swaggerJSDoc(options);
 
-module.exports = (app) => {
+const setupSwagger = (app) => {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
+
+export default setupSwagger;
