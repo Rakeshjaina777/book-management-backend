@@ -4,6 +4,22 @@
 
 ---
 
+// ----------------------------
+// 2. ER Diagram (Textual View)
+// ----------------------------
+
+// User (1) ────< (M) Review (M) >──── (1) Book
+
+// Entities:
+// User: id, email, password, createdAt
+// Book: id, title, author, genre, createdAt
+// Review: id, rating, comment, userId, bookId, createdAt
+
+// Relationships:
+// - User ↔ Review: One-to-Many (1 user can write many reviews)
+// - Book ↔ Review: One-to-Many (1 book can have many reviews)
+// - userId and bookId in Review are foreign keys
+
 ## 🚀 Features
 
 - 🛡️ JWT Authentication (Login, Signup)

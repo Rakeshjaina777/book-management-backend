@@ -1,11 +1,14 @@
 const express = require("express");
+const { signup, login } = require("../controllers/authController");
+const { check, validationResult } = require("express-validator");
+
 const router = express.Router();
 
 /**
  * @swagger
  * tags:
  *   name: Auth
- *   description: Endpoints for user authentication
+ *   description: Authentication endpoints
  */
 
 /**
@@ -20,32 +23,38 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
  *             properties:
  *               email:
  *                 type: string
- *                 example: test@example.com
+ *                 example: user@example.com
  *               password:
  *                 type: string
- *                 example: mysecurepassword
+ *                 example: secret123
  *     responses:
  *       201:
- *         description: User successfully registered
+ *         description: User created
  *       400:
  *         description: Email already exists
  */
-router.post("/signup", async (req, res) => {
-  // controller logic will go here in part 3
-  res.status(201).json({ message: "Stub signup route" });
-});
+router.post(
+  "/signup",
+  [
+    check("email").isEmail().withMessage("Invalid email"),
+    check("password").isLength({ min: 6 }).withMessage("Password too short"),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+    signup(req, res);
+  }
+);
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login a user and return a JWT
+ *     summary: Login a user and return JWT
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -53,25 +62,29 @@ router.post("/signup", async (req, res) => {
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
  *             properties:
  *               email:
  *                 type: string
- *                 example: test@example.com
  *               password:
  *                 type: string
- *                 example: mysecurepassword
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Token returned
  *       401:
  *         description: Invalid credentials
  */
-router.post("/login", async (req, res) => {
-  // controller logic will go here in part 3
-  res.status(200).json({ message: "Stub login route" });
-});
+router.post(
+  "/login",
+  [
+    check("email").isEmail().withMessage("Invalid email"),
+    check("password").notEmpty().withMessage("Password is required"),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+    login(req, res);
+  }
+);
 
 module.exports = router;
