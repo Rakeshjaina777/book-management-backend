@@ -47,5 +47,6 @@ model Review {
   bookId    String
   createdAt DateTime @default(now())
 
-  @@unique([userId, bookId])
+  @@unique([userId, bookId], name: "userId_bookId")
 }
+

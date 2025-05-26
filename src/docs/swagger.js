@@ -17,9 +17,28 @@ const options = {
         description: "Development server",
       },
     ],
+    // components: {
+    //   securitySchemes: {
+    //     bearerAuth: {
+    //       type: "http",
+    //       scheme: "bearer",
+    //       bearerFormat: "JWT",
+    //     },
+    //   },
+    // },
+    // security: [
+    //   {
+    //     bearerAuth: [],
+    //   },
+    // ],
   },
-  apis: ["./routes/auth.js","./routes/*.js", "./src/controllers/*.js", "./src/middleware/*.js"],
-  // path to files with Swagger annotations
+  apis: [
+    "./routes/auth.js",
+    "./routes/*.js",
+    "./routes/reviews.js",
+    "./src/controllers/*.js",
+    "./src/middleware/*.js",
+  ],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

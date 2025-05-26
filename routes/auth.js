@@ -89,7 +89,7 @@ router.post(
  *         description: Invalid credentials
  */
 router.post(
-  "/auth/login",
+  "/login",
   [
     check("email").isEmail().withMessage("Invalid email"),
     check("password").notEmpty().withMessage("Password is required"),
@@ -97,7 +97,7 @@ router.post(
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.warn("⚠️  Validation failed in /api/auth/login:", errors.array());
+      console.error("⚠️  Validation failed in /api/auth/login:", errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 

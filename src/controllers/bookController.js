@@ -6,16 +6,16 @@ const prisma = new PrismaClient();
  * Create a new book
  */
 export const createBook = async (req, res) => {
-  const { tittle, author, genre } = req.body;
+  const { title, author, genre } = req.body; // ✅ Fix this
 
   try {
-    if (!tittle || !author || !genre) {
+    if (!title || !author || !genre) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
     const newBook = await prisma.book.create({
-      data: { tittle, author, genre },
-      select: { id: true, tittle: true, author: true, genre: true },
+      data: { title, author, genre }, // ✅ Fix here too
+      select: { id: true, title: true, author: true, genre: true },
     });
 
     return res.status(201).json({
