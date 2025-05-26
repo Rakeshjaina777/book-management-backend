@@ -113,6 +113,8 @@ http://localhost:5000/api-docs
 
 ### 🔗 Swagger UI
 Visit: [http://localhost:5000/api-docs](http://localhost:5000/api-docs)
+![image](https://github.com/user-attachments/assets/331d540d-2351-4542-b4fd-481e9eafaef1)
+
 
 Contains detailed docs for:
 - `/auth/signup`, `/auth/login`
