@@ -22,6 +22,7 @@ const router = express.Router();
  *   post:
  *     summary: Add a new book
  *     tags: [Books]
+ * 
  *     security:
  *       - bearerAuth: []
  *     requestBody:

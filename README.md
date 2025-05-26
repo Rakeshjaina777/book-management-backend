@@ -1,4 +1,4 @@
-# 📘 Book Review API — Final README (Part 7)
+
 
 ## 📌 Overview
 A secure and modular backend API for managing books and reviews.

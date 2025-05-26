@@ -17,15 +17,15 @@ const options = {
         description: "Development server",
       },
     ],
-    // components: {
-    //   securitySchemes: {
-    //     bearerAuth: {
-    //       type: "http",
-    //       scheme: "bearer",
-    //       bearerFormat: "JWT",
-    //     },
-    //   },
-    // },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
     // security: [
     //   {
     //     bearerAuth: [],
