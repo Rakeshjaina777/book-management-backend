@@ -230,4 +230,4 @@ book-review-api/
 - Add user profile model
 - Enable likes on reviews
 - Add GraphQL endpoint (already scaffolded)
-- Add Redis-based caching on book detail
+- Add Redis-based caching on Book detail
